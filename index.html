@@ -78,7 +78,7 @@ footer{text-align:center;color:var(--gr);font-size:11px;padding:14px}
   <button class="btn btn-g nav on" id="navT" data-ar="التذاكر" data-en="Tickets">التذاكر</button>
   <button class="btn btn-g nav" id="navR" data-ar="التقرير" data-en="Report">التقرير</button>
   <button class="btn btn-o" id="lB">English</button>
-  <button class="btn btn-g np" id="eB">تصدير</button>
+  <button class="btn btn-g np" id="eB" data-ar="تصدير" data-en="Export">تصدير</button>
   <button class="btn btn-g np" id="cB">CSV</button>
 </header>
 <div class="wrap">
@@ -103,7 +103,7 @@ footer{text-align:center;color:var(--gr);font-size:11px;padding:14px}
     </div>
     <div style="margin-top:12px"><label data-ar="الوصف وخطوات إعادة الإنتاج" data-en="Description and steps to reproduce">الوصف وخطوات إعادة الإنتاج</label><textarea id="fDs"></textarea></div>
     <div style="margin-top:12px"><label data-ar="روابط المرفقات (Google Drive)" data-en="Attachment links (Google Drive)">روابط المرفقات (Google Drive)</label><textarea id="fLk" placeholder="https://drive.google.com/..."></textarea><div class="hint">رابط واحد في كل سطر — تأكد من صلاحية المشاركة</div></div>
-    <div class="ra"><button class="btn btn-o" id="aB">إضافة التذكرة</button><button class="btn btn-g" id="cL">مسح</button></div>
+    <div class="ra"><button class="btn btn-o" id="aB" data-ar="إضافة التذكرة" data-en="Add Ticket">إضافة التذكرة</button><button class="btn btn-g" id="cL" data-ar="مسح" data-en="Clear">مسح</button></div>
   </div>
   <div class="card"><h2 data-ar="التذاكر" data-en="Tickets">التذاكر</h2>
     <div class="filters"><input id="qS" placeholder="بحث…"><select id="qSt"></select><select id="qPr"></select><select id="qMd"></select></div>
@@ -120,8 +120,8 @@ footer{text-align:center;color:var(--gr);font-size:11px;padding:14px}
       <div><label data-ar="أعدّ التقرير" data-en="Prepared by">أعدّ التقرير</label><input id="rpB" placeholder="Lammk Delivery Office"></div>
     </div>
     <div class="ra">
-      <button class="btn btn-o" id="rpBld">تحديث التقرير</button>
-      <button class="btn btn-n" id="rpPrt">طباعة / حفظ PDF</button>
+      <button class="btn btn-o" id="rpBld" data-ar="تحديث التقرير" data-en="Refresh Report">تحديث التقرير</button>
+      <button class="btn btn-n" id="rpPrt" data-ar="طباعة / حفظ PDF" data-en="Print / Save as PDF">طباعة / حفظ PDF</button>
       
     </div>
   </div>
@@ -134,11 +134,11 @@ footer{text-align:center;color:var(--gr);font-size:11px;padding:14px}
   <div class="meta" id="mMe"></div>
   <div><label data-ar="الوصف" data-en="Description">الوصف</label><div id="mDs" style="background:var(--bg);border:1px solid var(--ln);border-radius:8px;padding:10px;font-size:13px;white-space:pre-wrap"></div></div>
   <div style="margin-top:12px"><label data-ar="المرفقات والروابط" data-en="Attachments and links">المرفقات والروابط</label><div id="mLk" class="lbx"></div>
-    <div class="grid" style="margin-top:8px"><div><input id="mLL" placeholder="اسم الرابط"></div><div><input id="mLU" placeholder="https://drive.google.com/..."></div><div><button class="btn btn-n" id="mAL" style="width:100%">إضافة رابط</button></div></div>
+    <div class="grid" style="margin-top:8px"><div><input id="mLL" placeholder="اسم الرابط"></div><div><input id="mLU" placeholder="https://drive.google.com/..."></div><div><button class="btn btn-n" id="mAL" style="width:100%" data-ar="إضافة رابط" data-en="Add link">إضافة رابط</button></div></div>
   </div>
   
   <div style="margin-top:12px"><label data-ar="إضافة تعليق" data-en="Add comment">إضافة تعليق</label><textarea id="mCm" style="min-height:60px"></textarea><input id="mAu" placeholder="الاسم | Name" style="margin-top:7px"></div>
-  <div class="ra"><button class="btn btn-o" id="bizCloseBtn">تأكيد الإغلاق (تم التحقق)</button><button class="btn btn-g" id="bizReopenBtn">إعادة فتح</button><button class="btn btn-g" id="mClBtn">إغلاق</button></div>
+  <div class="ra"><button class="btn btn-o" id="bizCloseBtn" data-ar="تأكيد الإغلاق (تم التحقق)" data-en="Confirm closure (verified)">تأكيد الإغلاق (تم التحقق)</button><button class="btn btn-g" id="bizReopenBtn" data-ar="إعادة فتح" data-en="Reopen">إعادة فتح</button><button class="btn btn-g" id="mClBtn" data-ar="إغلاق" data-en="Close">إغلاق</button></div>
   <div style="margin-top:14px"><label data-ar="سجل التذكرة" data-en="Ticket history">سجل التذكرة</label><div class="log" id="mLg"></div></div>
 </div></div>
 <footer>Lammk — نظام تذاكر لمّك</footer>
@@ -156,8 +156,9 @@ const PD={ar:{P1:"توقف تشغيلي",P2:"تأثير كبير مع حل بد�
 let lang="ar",items=[],sla={P1:{resp:4,res:24},P2:{resp:8,res:72},P3:{resp:24,res:120},P4:{resp:48,res:240}},openId=null;
 const $=function(id){return document.getElementById(id)};
 function esc(s){return(s||"").replace(/[&<>"]/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]})}
-function fmt(d){if(!d)return"—";var x=new Date(d);return isNaN(x)?d:x.toISOString().slice(0,10)}
+function fmt(d){if(!d||d==="")return"—";var s=String(d);if(/^\d{4}-\d{2}-\d{2}/.test(s))return s.slice(0,10);var m=s.match(/([A-Z][a-z]+)\s+(\d+)\s+(\d{4})/);if(m){var mn={Jan:"01",Feb:"02",Mar:"03",Apr:"04",May:"05",Jun:"06",Jul:"07",Aug:"08",Sep:"09",Oct:"10",Nov:"11",Dec:"12"};return m[3]+"-"+(mn[m[1]]||"01")+"-"+m[2].padStart(2,"0")}var x=new Date(d);if(isNaN(x))return s;return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0")}
 function now(){return new Date().toISOString()}
+function fmtDT(d){if(!d||d==="")return"—";var x=new Date(d);if(isNaN(x))return fmt(d);return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0")+" "+String(x.getHours()).padStart(2,"0")+":"+String(x.getMinutes()).padStart(2,"0")}
 function sn(k){return(SN[lang]||SN.ar)[k]||k}
 function pd(k){return(PD[lang]||PD.ar)[k]||k}
 function sf(p){return sla[p]||{resp:24,res:120};}
@@ -256,7 +257,7 @@ function render(){
     '<td><span class="tag '+SCLS[t.status]+'">'+sn(t.status)+'</span></td>'+
     '<td>'+esc(t.assignee||"—")+'</td>'+
     '<td style="text-align:center">'+(t.links&&t.links.length?'<span class="tag s-wait">&#128206; '+t.links.length+'</span>':"—")+'</td>'+
-    '<td>'+fmt(t.created)+'</td><td>'+(t.due?fmt(t.due):"—")+'</td>'+
+    '<td>'+fmtDT(t.created)+'</td><td>'+(t.due?fmt(t.due):"—")+'</td>'+
     '<td><button class="btn btn-n" style="padding:5px 11px" onclick="openT(\''+t.id+'\')">'+L("view")+'</button></td></tr>'}
   $("tb").innerHTML=html;
   $("em").style.display=rows.length?"none":"block";
@@ -277,7 +278,7 @@ function addTicket(){
 function openT(id){
   var t=items.find(function(x){return x.id===id});if(!t)return;openId=id;
   $("mTi").textContent=t.title;$("mId").textContent=t.id;
-  $("mMe").innerHTML=[[L("reporter"),t.reporter],[L("module"),(MOD[t.module]||MOD.other)[lang]],[L("type"),(TYP[t.type]||TYP.bug)[lang]],[lang==="ar"?"الإنشاء":"Created",fmt(t.created)],[lang==="ar"?"الاستحقاق":"Due",t.due?fmt(t.due):"—"],[L("ref"),t.ref||"—"]].map(function(p){return'<div><span>'+p[0]+'</span><b>'+esc(String(p[1]))+'</b></div>'}).join("");
+  $("mMe").innerHTML=[[L("reporter"),t.reporter],[L("module"),(MOD[t.module]||MOD.other)[lang]],[L("type"),(TYP[t.type]||TYP.bug)[lang]],[lang==="ar"?"الإنشاء":"Created",fmtDT(t.created)],[lang==="ar"?"الاستحقاق":"Due",t.due?fmt(t.due):"—"],[L("ref"),t.ref||"—"]].map(function(p){return'<div><span>'+p[0]+'</span><b>'+esc(String(p[1]))+'</b></div>'}).join("");
   $("mDs").textContent=t.desc||"—";
   var lk=$("mLk");
   if(!t.links||!t.links.length)lk.innerHTML='<span style="color:var(--gr);font-size:12px">'+L("noA")+'</span>';
@@ -300,7 +301,7 @@ function saveModal(){
     if(np!==t.priority){t.log.push({t:now(),who:who,txt:L("changed")+" "+L("prio")+": "+t.priority+" → "+np});t.priority=np;ch=true}
     if(na!==(t.assignee||"")){t.log.push({t:now(),who:who,txt:L("changed")+" "+L("assign")+" → "+(na||"—")});t.assignee=na;ch=true}
   }
-  if(c){if(!t.firstRespAt)t.firstRespAt=now();t.log.push({t:now(),who:who,txt:c});ch=true}
+  if(c){if(!t.firstRespAt)t.firstRespAt=now();if(ch&&t.log.length>0){t.log[t.log.length-1].txt+=" — "+c}else{t.log.push({t:now(),who:who,txt:c});ch=true}}
   if(ch){api("update",{id:t.id,status:t.status,priority:t.priority,assignee:t.assignee,log:t.log,firstRespAt:t.firstRespAt,resolvedAt:t.resolvedAt,waitMs:t.waitMs,waitStart:t.waitStart}).then(function(){render();openT(openId)}).catch(function(){alert(L("conn"))})}
 }
 
@@ -350,7 +351,7 @@ function buildReport(){
   var wt=rows.filter(function(t){return t.status==="waiting"});
   function cnt(a,k,v){return a.filter(function(t){return t[k]===v}).length}
   function tR(t){var rp=respH(t),rs=resH(t),lm=sf(t.priority);
-    return'<tr><td class="id">'+t.id+'</td><td>'+esc(t.title)+'</td><td>'+(MOD[t.module]||MOD.other)[lang]+'</td><td><span class="tag p-'+t.priority.toLowerCase()+'">'+t.priority+'</span></td><td><span class="tag '+SCLS[t.status]+'">'+sn(t.status)+'</span></td><td>'+esc(t.assignee||"—")+'</td><td>'+fmt(t.created)+'</td><td>'+(rp==null?'—':'<span class="'+(rp<=lm.resp?"ok":"bad")+'">'+fH(rp)+'</span>')+'</td><td>'+(rs==null?(isO(t)?ageD(t).toFixed(1)+L("days"):"—"):'<span class="'+(rs<=lm.res?"ok":"bad")+'">'+fH(rs)+'</span>')+'</td></tr>'}
+    return'<tr><td class="id">'+t.id+'</td><td>'+esc(t.title)+'</td><td>'+(MOD[t.module]||MOD.other)[lang]+'</td><td><span class="tag p-'+t.priority.toLowerCase()+'">'+t.priority+'</span></td><td><span class="tag '+SCLS[t.status]+'">'+sn(t.status)+'</span></td><td>'+esc(t.assignee||"—")+'</td><td>'+fmtDT(t.created)+'</td><td>'+(rp==null?'—':'<span class="'+(rp<=lm.resp?"ok":"bad")+'">'+fH(rp)+'</span>')+'</td><td>'+(rs==null?(isO(t)?ageD(t).toFixed(1)+L("days"):"—"):'<span class="'+(rs<=lm.res?"ok":"bad")+'">'+fH(rs)+'</span>')+'</td></tr>'}
   var tH='<thead><tr><th>'+L("view").replace(L("view"),lang==="ar"?"الرقم":"ID")+'</th><th>'+(lang==="ar"?"العنوان":"Title")+'</th><th>'+L("module")+'</th><th>'+L("prio")+'</th><th>'+L("status")+'</th><th>'+L("assign")+'</th><th>'+(lang==="ar"?"الإنشاء":"Created")+'</th><th>'+L("avgR")+'</th><th>'+L("avgX")+'</th></tr></thead>';
   var img=document.querySelector("header img").src;
   var h='<div class="card"><div class="rh"><img src="'+img+'"><div><h1>'+L("repTi")+'</h1><small>'+L("repSu")+'</small></div></div><div class="meta"><div><span>'+L("period")+'</span><b>'+esc($("rpP").value||($("rpF").value||"—")+" → "+($("rpT").value||"—"))+'</b></div><div><span>'+L("issued")+'</span><b>'+new Date().toLocaleString()+'</b></div><div><span>'+L("by")+'</span><b>'+esc($("rpB").value||"Lammk Delivery Office")+'</b></div><div><span>'+L("tickets")+'</span><b>'+rows.length+'</b></div></div></div>';
@@ -383,7 +384,7 @@ function saveSla(){
 }
 
 /* Export */
-function exportCSV(){var h=["ID","Title","Module","Type","Priority","Status","Reporter","Assignee","Created","Due","Ref","Description"];var rows=items.map(function(t){return[t.id,t.title,(MOD[t.module]||MOD.other).en,(TYP[t.type]||TYP.bug).en,t.priority,t.status,t.reporter,t.assignee||"",fmt(t.created),t.due||"",t.ref||"",(t.desc||"").replace(/\n/g," ")]});var csv="\uFEFF"+[h].concat(rows).map(function(r){return r.map(function(c){return'"'+String(c).replace(/"/g,'""')+'"'}).join(",")}).join("\n");dl(new Blob([csv],{type:"text/csv;charset=utf-8"}),"lammk_tickets.csv")}
+function exportCSV(){var h=["ID","Title","Module","Type","Priority","Status","Reporter","Assignee","Created","Due","Ref","Description"];var rows=items.map(function(t){return[t.id,t.title,(MOD[t.module]||MOD.other).en,(TYP[t.type]||TYP.bug).en,t.priority,t.status,t.reporter,t.assignee||"",fmtDT(t.created),t.due||"",t.ref||"",(t.desc||"").replace(/\n/g," ")]});var csv="\uFEFF"+[h].concat(rows).map(function(r){return r.map(function(c){return'"'+String(c).replace(/"/g,'""')+'"'}).join(",")}).join("\n");dl(new Blob([csv],{type:"text/csv;charset=utf-8"}),"lammk_tickets.csv")}
 function exportJSON(){dl(new Blob([JSON.stringify({items:items,sla:sla},null,2)],{type:"application/json"}),"lammk_tickets.json")}
 function dl(b,n){var u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download=n;a.click();URL.revokeObjectURL(u)}
 
