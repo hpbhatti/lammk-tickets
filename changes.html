@@ -110,6 +110,7 @@ footer{text-align:center;color:var(--gr);font-size:11px;padding:14px}
       <input id="qS" placeholder="بحث…">
       <select id="qSt"></select>
       <select id="qMd"></select>
+      <select id="qSrt" data-ar="ترتيب حسب" data-en="Sort by"></select>
     </div>
     <div class="tw"><table><thead><tr>
       <th data-ar="الرمز" data-en="ID">الرمز</th>
@@ -119,8 +120,8 @@ footer{text-align:center;color:var(--gr);font-size:11px;padding:14px}
       <th data-ar="الجهد" data-en="Effort">الجهد</th>
       <th data-ar="التكلفة" data-en="Cost">التكلفة</th>
       <th data-ar="الحالة" data-en="Status">الحالة</th>
-      <th data-ar="الأولوية" data-en="Priority">الأولوية</th>
-      <th data-ar="التقديم" data-en="Submitted">التقديم</th>
+      <th data-ar="الترتيب" data-en="Rank">الترتيب</th>
+            <th data-ar="التقديم" data-en="Submitted">التقديم</th>
       <th></th>
     </tr></thead><tbody id="tb"></tbody></table></div>
     <div class="empty" id="em" data-ar="لا توجد طلبات." data-en="No requests.">لا توجد طلبات.</div>
@@ -186,8 +187,8 @@ function localSave(){try{localStorage.setItem("lammk_cr",JSON.stringify({items:i
 function api(action,body){
   if(LOCAL){return new Promise(function(resolve){
     if(action==="cr_list"){resolve({ok:true,items:items})}
-    else if(action==="cr_create"){_seq++;var id="CR-"+String(_seq).padStart(3,"0");var o={id:id,title:body.title||"",requester:body.requester||"",module:body.module||"other",problem:body.problem||"",urgency:body.urgency||"nice",links:body.links||[],log:[{t:now(),who:body.requester||"—",txt:"__created__"}],impact:"",effort:"",costMin:0,costMax:0,costType:"tbd",status:"new",decision:"",targetRelease:"",created:now()};items.push(o);localSave();resolve({ok:true,item:o})}
-    else if(action==="cr_update"){var t=items.find(function(x){return x.id===body.id});if(t){var fs=["title","impact","effort","costMin","costMax","costType","status","decision","targetRelease","links","log","urgency"];fs.forEach(function(f){if(body[f]!==undefined)t[f]=body[f]})}localSave();resolve({ok:true})}
+    else if(action==="cr_create"){_seq++;var id="CR-"+String(_seq).padStart(3,"0");var o={id:id,title:body.title||"",requester:body.requester||"",module:body.module||"other",problem:body.problem||"",urgency:body.urgency||"nice",links:body.links||[],log:[{t:now(),who:body.requester||"—",txt:"__created__"}],impact:"",effort:"",costMin:0,costMax:0,costType:"tbd",rank:0,status:"new",decision:"",targetRelease:"",created:now()};items.push(o);localSave();resolve({ok:true,item:o})}
+    else if(action==="cr_update"){var t=items.find(function(x){return x.id===body.id});if(t){var fs=["title","impact","effort","costMin","costMax","costType","rank","status","decision","targetRelease","links","log","urgency"];fs.forEach(function(f){if(body[f]!==undefined)t[f]=body[f]})}localSave();resolve({ok:true})}
     else if(action.indexOf("cr_delete")>-1){var did=action.split("id=")[1];items=items.filter(function(x){return x.id!==did});localSave();resolve({ok:true})}
     else resolve({ok:true})
   })}
@@ -214,7 +215,7 @@ function render(){
   var rows=items.filter(function(t){
     if(st&&t.status!==st)return false;if(md&&t.module!==md)return false;
     if(q){var s=(t.id+" "+t.title+" "+t.problem+" "+t.requester).toLowerCase();if(s.indexOf(q)<0)return false}return true
-  }).sort(function(a,b){var pa=prioScore(a),pb=prioScore(b);if(pa!==pb)return pa-pb;return b.created.localeCompare(a.created)});
+  }).sort(function(a,b){var srt=$("qSrt")?$("qSrt").value:"rank";var da=a.status==="done"?1:0,db=b.status==="done"?1:0;if(da!==db)return da-db;if(srt==="rank"){var ra=a.rank||999,rb=b.rank||999;if(ra!==rb)return ra-rb;return b.created.localeCompare(a.created)}if(srt==="newest")return b.created.localeCompare(a.created);if(srt==="status"){var so={new:1,review:2,approved:3,scheduled:4,deferred:5,rejected:6,done:7};return(so[a.status]||9)-(so[b.status]||9)}if(srt==="impact"){var io={high:1,medium:2,low:3};return(io[a.impact]||9)-(io[b.impact]||9)}return 0});
   var html="";
   for(var i=0;i<rows.length;i++){var t=rows[i];
     html+='<tr><td class="id">'+t.id+'</td><td>'+esc(t.title)+'</td><td>'+(MOD[t.module]||MOD.other)[lang]+'</td>'+
@@ -222,7 +223,7 @@ function render(){
     '<td>'+(t.effort?(EFF[t.effort]||{})[lang]||"—":"—")+'</td>'+
     '<td>'+costStr(t)+'</td>'+
     '<td><span class="tag '+(SCLS2[t.status]||"")+'">'+csn(t.status)+'</span></td>'+
-    '<td>'+prioLabel(t)+'</td>'+
+    '<td>'+(t.rank?'<b style="color:var(--nv)">#'+t.rank+'</b>':'—')+'</td>'+
     '<td>'+fmtDT(t.created)+'</td>'+
     '<td><button class="btn btn-n" style="padding:5px 11px" onclick="openCR(\''+t.id+'\')">'+(lang==="ar"?"عرض":"View")+'</button></td></tr>'}
   $("tb").innerHTML=html;
@@ -241,6 +242,7 @@ function openCR(id){
   else{var lh="";for(var i=0;i<t.links.length;i++){lh+='<a href="'+esc(t.links[i].url)+'" target="_blank" rel="noopener">&#128206; '+esc(t.links[i].label)+'</a>'}lk.innerHTML=lh}
   /* tech fields */
   if(ROLE==="tech"){
+    if($("mRank"))$("mRank").value=t.rank||0;
     if($("mCT"))$("mCT").value=t.costType||"tbd";
     if($("mImp"))$("mImp").value=t.impact||"";
     if($("mEff"))$("mEff").value=t.effort||"";
@@ -276,27 +278,28 @@ function saveCR(){
   if(ROLE==="tech"){
     var ni=$("mImp").value,ne=$("mEff").value,ns=$("mSt").value;
     var nd=$("mDec").value.trim(),nt=$("mTR").value.trim();
-    var ncmin=Number($("mCMin").value)||0,ncmax=Number($("mCMax").value)||0;var nct=$("mCT")?$("mCT").value:t.costType;
+    var ncmin=Number($("mCMin").value)||0,ncmax=Number($("mCMax").value)||0;var nct=$("mCT")?$("mCT").value:t.costType;var nrk=$("mRank")?Number($("mRank").value)||0:t.rank||0;
     if(ni!==t.impact){t.log.push({t:now(),who:who,txt:(lang==="ar"?"غيّر التأثير":"changed impact")+": "+(IMP[ni]||{})[lang]});t.impact=ni;ch=true}
     if(ne!==t.effort){t.log.push({t:now(),who:who,txt:(lang==="ar"?"غيّر الجهد":"changed effort")+": "+(EFF[ne]||{})[lang]});t.effort=ne;ch=true}
     if(ns!==t.status){t.log.push({t:now(),who:who,txt:(lang==="ar"?"غيّر الحالة":"changed status")+": "+csn(t.status)+" → "+csn(ns)});t.status=ns;ch=true}
     if(nd!==t.decision){t.decision=nd;ch=true}
     if(nt!==t.targetRelease){t.targetRelease=nt;ch=true}
+    if(nrk!==(t.rank||0)){t.rank=nrk;ch=true}
     if(nct!==(t.costType||"")){t.costType=nct;ch=true}
     if(ncmin!==t.costMin||ncmax!==t.costMax){t.costMin=ncmin;t.costMax=ncmax;t.log.push({t:now(),who:who,txt:(lang==="ar"?"حدّث التكلفة":"updated cost")+": "+costStr(t)});ch=true}
   }
   if(c){if(ch&&t.log.length>0){t.log[t.log.length-1].txt+=" — "+c}else{t.log.push({t:now(),who:who,txt:c});ch=true}}
-  if(ch){api("cr_update",{id:t.id,impact:t.impact,effort:t.effort,costMin:t.costMin,costMax:t.costMax,costType:t.costType,status:t.status,decision:t.decision,targetRelease:t.targetRelease,links:t.links,log:t.log}).then(function(){render();openCR(openId)}).catch(function(){alert("Error")})}
+  if(ch){api("cr_update",{id:t.id,impact:t.impact,effort:t.effort,costMin:t.costMin,costMax:t.costMax,costType:t.costType,rank:t.rank,status:t.status,decision:t.decision,targetRelease:t.targetRelease,links:t.links,log:t.log}).then(function(){render();openCR(openId)}).catch(function(){alert("Error")})}
 }
 
 function addCR(){
   var ti=$("fT").value.trim(),rq=$("fR").value.trim(),pr=$("fP").value.trim();
   if(!ti||!rq||!pr){alert(lang==="ar"?"الرجاء إدخال العنوان واسم مقدم الطلب ووصف المشكلة":"Please enter title, requester and problem description");return}
   $("aB").disabled=true;
-  api("cr_create",{title:ti,requester:rq,module:$("fM").value,problem:pr,urgency:$("fU").value,links:parseLinks($("fLk").value)}).then(function(r){
-    if(r.ok)items.push(r.item);
-    $("aB").disabled=false;["fT","fR","fP","fLk"].forEach(function(x){if($(x))$(x).value=""});render();
-  }).catch(function(){alert("Error");$("aB").disabled=false});
+  var body={title:ti,requester:rq,module:$("fM").value,problem:pr,urgency:$("fU").value,links:parseLinks($("fLk").value)};
+  items.push({id:"CR-NEW",title:ti,requester:rq,module:body.module,problem:pr,urgency:body.urgency,links:body.links,log:[{t:now(),who:rq,txt:"__created__"}],impact:"",effort:"",costMin:0,costMax:0,costType:"tbd",rank:0,status:"new",decision:"",targetRelease:"",created:now()});
+  $("aB").disabled=false;["fT","fR","fP","fLk"].forEach(function(x){if($(x))$(x).value=""});render();
+  api("cr_create",body).then(function(r){if(r.ok){var idx=items.findIndex(function(x){return x.id==="CR-NEW"});if(idx>-1)items[idx]=r.item;render()}}).catch(function(){alert("Error")});
 }
 
 function addCRLink(){
@@ -313,8 +316,8 @@ function delCR(){
 }
 
 function exportCSV(){
-  var h=["ID","Title","Module","Problem","Urgency","Impact","Effort","Cost Min","Cost Max","Status","Decision","Target Release","Requester","Created"];
-  var rows=items.map(function(t){return[t.id,t.title,(MOD[t.module]||MOD.other).en,t.problem,(URG[t.urgency]||{}).en||"",(IMP[t.impact]||{}).en||"",(EFF[t.effort]||{}).en||"",t.costMin||"",t.costMax||"",(CR_STS[t.status]||{}).en||"",t.decision||"",t.targetRelease||"",t.requester,fmt(t.created)]});
+  var h=["ID","Title","Module","Problem","Urgency","Impact","Effort","Cost Min","Cost Max","Rank","Status","Decision","Target Release","Requester","Created"];
+  var rows=items.map(function(t){return[t.id,t.title,(MOD[t.module]||MOD.other).en,t.problem,(URG[t.urgency]||{}).en||"",(IMP[t.impact]||{}).en||"",(EFF[t.effort]||{}).en||"",t.costMin||"",t.costMax||"",(t.rank||"")+" "+(CR_STS[t.status]||{}).en||"",t.decision||"",t.targetRelease||"",t.requester,fmt(t.created)]});
   var csv="\uFEFF"+[h].concat(rows).map(function(r){return r.map(function(c){return'"'+String(c).replace(/"/g,'""')+'"'}).join(",")}).join("\n");
   var u=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));var a=document.createElement("a");a.href=u;a.download="lammk_change_requests.csv";a.click();URL.revokeObjectURL(u);
 }
@@ -351,7 +354,7 @@ function buildReport(){
     '<td>'+(t.effort?(EFF[t.effort]||{})[lang]||"":"—")+'</td>'+
     '<td>'+costStr(t)+'</td>'+
     '<td><span class="tag '+(SCLS2[t.status]||"")+'">'+csn(t.status)+'</span></td>'+
-    '<td>'+prioLabel(t)+'</td>'+
+    '<td>'+(t.rank?'<b style="color:var(--nv)">#'+t.rank+'</b>':'—')+'</td>'+
     '<td>'+esc(t.decision||"—")+'</td>'+
     '<td>'+esc(t.targetRelease||"—")+'</td></tr>'}
   var tH='<thead><tr><th>'+(lang==="ar"?"الرمز":"ID")+'</th><th>'+(lang==="ar"?"البند":"Item")+'</th><th>'+(lang==="ar"?"الوحدة":"Module")+'</th><th>'+(lang==="ar"?"التأثير":"Impact")+'</th><th>'+(lang==="ar"?"الجهد":"Effort")+'</th><th>'+(lang==="ar"?"التكلفة":"Cost")+'</th><th>'+(lang==="ar"?"الحالة":"Status")+'</th><th>'+(lang==="ar"?"الأولوية":"Priority")+'</th><th>'+(lang==="ar"?"القرار":"Decision")+'</th><th>'+(lang==="ar"?"الإصدار":"Release")+'</th></tr></thead>';
@@ -382,6 +385,8 @@ function setFilters(){
   $("qSt").innerHTML='<option value="">'+(lang==="ar"?"كل الحالات":"All")+'</option>';
   for(var i=0;i<sts.length;i++)$("qSt").innerHTML+='<option value="'+sts[i]+'">'+csn(sts[i])+'</option>';
   $("qMd").innerHTML='<option value="">'+(lang==="ar"?"كل الوحدات":"All")+'</option>';
+  var sOpts=[["rank",lang==="ar"?"الترتيب (الأعلى أولاً)":"Rank (highest first)"],["newest",lang==="ar"?"الأحدث أولاً":"Newest first"],["status",lang==="ar"?"حسب الحالة":"By status"],["impact",lang==="ar"?"حسب التأثير":"By impact"]];
+  $("qSrt").innerHTML="";for(var si=0;si<sOpts.length;si++)$("qSrt").innerHTML+='<option value="'+sOpts[si][0]+'">'+sOpts[si][1]+'</option>';
   var mks=Object.keys(MOD);for(var i=0;i<mks.length;i++)$("qMd").innerHTML+='<option value="'+mks[i]+'">'+(MOD[mks[i]])[lang]+'</option>';
 }
 
@@ -403,10 +408,11 @@ function initCR(){
   if($("mDlBtn"))$("mDlBtn").onclick=delCR;
   if($("rpBld"))$("rpBld").onclick=buildReport;
   if($("rpPrt"))$("rpPrt").onclick=function(){buildReport();setTimeout(function(){window.print()},200)};
-  ["qS","qSt","qMd"].forEach(function(x){if($(x))$(x).addEventListener("input",render)});
+  ["qS","qSt","qMd","qSrt"].forEach(function(x){if($(x))$(x).addEventListener("input",render)});
   setFilters();loadAll();
 }
 initCR();
+
 </script>
 </body>
 </html>
