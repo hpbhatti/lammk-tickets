@@ -254,6 +254,7 @@ footer{text-align:center;color:var(--gr);font-size:11px;padding:14px}
     <!-- Ticket Lifecycle Action Buttons -->
     <div class="ra" style="margin-top:16px;border-top:1px solid var(--bd);padding-top:14px">
       <button class="btn btn-o" id="bizCloseBtn" data-ar="تأكيد الإغلاق (تم التحقق)" data-en="Confirm closure (verified)">تأكيد الإغلاق (تم التحقق)</button>
+      <button class="btn btn-d" id="mDelBtn" onclick="delTicket()" data-ar="حذف" data-en="Delete" style="display:none">حذف</button>
       <button class="btn btn-g" id="bizReopenBtn" data-ar="إعادة فتح" data-en="Reopen">إعادة فتح</button>
       <button class="btn btn-n" id="bizEditBtn" data-ar="✏️ تعديل التذكرة" data-en="✏️ Edit Ticket">✏️ تعديل التذكرة</button>
       <button class="btn btn-g" id="mClBtn" data-ar="إغلاق النافذة" data-en="Close">إغلاق النافذة</button>
@@ -333,7 +334,7 @@ function localLoad(){
   }catch(e){}
 }
 
-/* Background Sync — verifies create success, removes phantom on failure */
+/* Background Direct Sync — Asynchronous, Non-Blocking, redirect: follow */
 function syncBg(action, body, localId){
   if(!API||API==="YOUR_APPS_SCRIPT_URL_HERE") return;
   var sep=API.indexOf("?")>-1?"&":"?";
@@ -362,26 +363,35 @@ function syncBg(action, body, localId){
 }
 
 function loadAll(){
-  localLoad();
-  calcNextId();
-  $("ldM").style.display="none";
-  $("vT").style.display="";
-  render();
-
   if(API&&API!=="YOUR_APPS_SCRIPT_URL_HERE"){
     var sep=API.indexOf("?")>-1?"&":"?";
     Promise.all([
       fetch(API+sep+"action=list",{redirect:"follow"}).then(function(r){return r.json()}),
       fetch(API+sep+"action=sla_get",{redirect:"follow"}).then(function(r){return r.json()})
     ]).then(function(arr){
-      if(arr[0]&&arr[0].ok&&Array.isArray(arr[0].items)&&arr[0].items.length){
+      if(arr[0]&&arr[0].ok&&Array.isArray(arr[0].items)){
         items=arr[0].items;
       }
       if(arr[1]&&arr[1].ok&&arr[1].sla)sla=arr[1].sla;
       calcNextId();
       localSave();
+      $("ldM").style.display="none";
+      $("vT").style.display="";
       render();
-    }).catch(function(e){console.log("Cached state active:",e)});
+    }).catch(function(e){
+      console.log("API failed, using local:",e);
+      localLoad();
+      calcNextId();
+      $("ldM").style.display="none";
+      $("vT").style.display="";
+      render();
+    });
+  } else {
+    localLoad();
+    calcNextId();
+    $("ldM").style.display="none";
+    $("vT").style.display="";
+    render();
   }
 }
 
@@ -487,6 +497,7 @@ function openT(id){
   var canEdit=(t.status==="open"&&!t.firstRespAt);
   $("bizEditBtn").style.display=canEdit?"inline-flex":"none";
 
+  if($("mDelBtn")){$("mDelBtn").style.display=canDelete(t)?"":"none"}
   $("modal").classList.add("on");
 }
 
@@ -617,6 +628,30 @@ function bizAct(a){
 }
 
 /* Links in modal */
+function canDelete(t){
+  if(t.firstRespAt) return false;
+  var age=(Date.now()-new Date(t.created).getTime())/3600000;
+  return age<=2;
+}
+
+function delTicket(){
+  var t=items.find(function(x){return x.id===openId});
+  if(!t){return}
+  if(!canDelete(t)){
+    alert(lang==="ar"?"لا يمكن حذف التذكرة بعد مرور ساعتين أو بعد بدء المعالجة.":"Cannot delete ticket after 2 hours or after first response.");
+    return;
+  }
+  if(!confirm(lang==="ar"?"هل تريد حذف هذه التذكرة نهائياً؟":"Delete this ticket permanently?")){return}
+  items=items.filter(function(x){return x.id!==openId});
+  localSave();
+  $("modal").classList.remove("on");
+  render();
+  if(API&&API!=="YOUR_APPS_SCRIPT_URL_HERE"){
+    var sep=API.indexOf("?")>-1?"&":"?";
+    fetch(API+sep+"action=delete&id="+openId,{method:"POST",redirect:"follow"}).catch(function(){});
+  }
+}
+
 function addL(){
   var t=items.find(function(x){return x.id===openId});if(!t)return;
   var u=$("mLU").value.trim();if(!/^https?:\/\//i.test(u)){alert(L("badU"));return}
