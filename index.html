@@ -333,18 +333,20 @@ function localLoad(){
   }catch(e){}
 }
 
-/* Background Direct Sync — fire-and-forget, no-cors avoids CORS preflight with GAS redirects */
+/* Background Direct Sync — text/plain avoids CORS preflight, body preserved through GAS redirect */
 function syncBg(action, body){
   if(!API||API==="YOUR_APPS_SCRIPT_URL_HERE") return;
   var sep=API.indexOf("?")>-1?"&":"?";
   try{
     fetch(API+sep+"action="+encodeURIComponent(action),{
       method:"POST",
-      mode:"no-cors",
       redirect:"follow",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},
       body:JSON.stringify(body||{})
-    }).catch(function(){/* opaque/no-cors response — ignore */});
-  }catch(e){/* never let a sync failure affect the UI */}
+    }).then(function(r){return r.text()})
+      .then(function(){})
+      .catch(function(){/* non-fatal */});
+  }catch(e){/* never block UI */}
 }
 
 function loadAll(){
