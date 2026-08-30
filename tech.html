@@ -333,8 +333,8 @@ function localLoad(){
   }catch(e){}
 }
 
-/* Background Direct Sync — Asynchronous, Non-Blocking, redirect: follow */
-function syncBg(action, body){
+/* Background Sync — verifies create success, removes phantom on failure */
+function syncBg(action, body, localId){
   if(!API||API==="YOUR_APPS_SCRIPT_URL_HERE") return;
   var sep=API.indexOf("?")>-1?"&":"?";
   try{
@@ -343,9 +343,21 @@ function syncBg(action, body){
       redirect:"follow",
       headers:{"Content-Type":"text/plain;charset=utf-8"},
       body:JSON.stringify(body||{})
-    }).then(function(r){return r.text()})
-      .then(function(){})
-      .catch(function(e){console.warn("Background sync error (non-fatal):",e)});
+    }).then(function(r){return r.json()})
+      .then(function(data){
+        if(action==="create"&&data&&data.ok&&data.item&&localId){
+          var idx=items.findIndex(function(x){return x.id===localId});
+          if(idx>-1){items[idx].id=data.item.id;items[idx].created=data.item.created;localSave();render()}
+        }
+      })
+      .catch(function(e){
+        console.warn("Sync error:",e);
+        if(action==="create"&&localId){
+          items=items.filter(function(x){return x.id!==localId});
+          localSave();render();
+          alert(lang==="ar"?"فشل حفظ التذكرة. يرجى المحاولة مرة أخرى.":"Failed to save ticket. Please try again.");
+        }
+      });
   }catch(e){console.warn("Sync dispatch failed:",e)}
 }
 
@@ -448,7 +460,7 @@ function addTicket(){
   render();
 
   /* Asynchronous Background Sync */
-  syncBg("create",o);
+  syncBg("create",o,o.id);
 }
 
 /* Open ticket modal */
