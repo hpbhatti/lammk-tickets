@@ -283,7 +283,7 @@ footer{text-align:center;color:var(--gr);font-size:11px;padding:14px}
 <footer>Lammk — نظام تذاكر لمّك</footer>
 
 <script>
-var ROLE="business",API="https://script.google.com/macros/s/AKfycbxynnub4hs7pxaxZWoKO4ZCgVHRyeEro6Lf5vYPRG0belCaReNOCuJGf7TOIVhVtv5S/exec",PIN_HASH="0";
+var ROLE="business",API="https://script.google.com/macros/s/AKfycbyXHwSBfmbBb6s305HwuNzwyDYsFLqU-5bZ09z1vJoP1owo0I2Ip2ntQWYoU7gRe5tI/exec",PIN_HASH="0";
 
 /* Lammk Ticketing — shared core */
 const MOD={admin:{ar:"بوابة الإدارة",en:"Admin Portal"},b2b:{ar:"بوابة الشركات",en:"B2B Portal"},driver:{ar:"تطبيق السائق",en:"Driver App"},b2c:{ar:"تطبيق الأفراد",en:"B2C App"},finance:{ar:"المالية والتسويات",en:"Finance & Payouts"},invoice:{ar:"الفوترة / ZATCA",en:"Invoicing / ZATCA"},backend:{ar:"الخلفية التقنية",en:"Backend"},other:{ar:"أخرى",en:"Other"}};
@@ -357,13 +357,26 @@ function loadAll(){
     render();
     return;
   }
-  /* Backend configured — fetch from Google Sheet as source of truth */
+  /* Backend configured — fetch from Google Sheet as source of truth.
+     Google Apps Script redirects (302) to script.googleusercontent.com;
+     we must follow the redirect and read JSON from the final response. */
   var sep=API.indexOf("?")>-1?"&":"?";
   Promise.all([
-    fetch(API+sep+"action=list").then(function(r){return r.json()}),
-    fetch(API+sep+"action=sla_get").then(function(r){return r.json()})
+    fetch(API+sep+"action=list",{redirect:"follow"}).then(function(r){
+      if(!r.ok)throw new Error("list HTTP "+r.status);
+      return r.json();
+    }),
+    fetch(API+sep+"action=sla_get",{redirect:"follow"}).then(function(r){
+      if(!r.ok)throw new Error("sla HTTP "+r.status);
+      return r.json();
+    })
   ]).then(function(arr){
-    if(arr[0]&&arr[0].ok&&Array.isArray(arr[0].items))items=arr[0].items;
+    if(arr[0]&&arr[0].ok&&Array.isArray(arr[0].items)){
+      items=arr[0].items;
+      console.log("✅ Loaded "+items.length+" tickets from Google Sheet");
+    }else{
+      console.warn("⚠️ API responded but items missing:",arr[0]);
+    }
     if(arr[1]&&arr[1].ok&&arr[1].sla)sla=arr[1].sla;
     calcNextId();
     localSave();
@@ -371,7 +384,7 @@ function loadAll(){
     $("vT").style.display="";
     render();
   }).catch(function(e){
-    console.warn("API fetch failed, falling back to cache:",e);
+    console.error("❌ API fetch failed:",e);
     localLoad();
     calcNextId();
     $("ldM").style.display="none";
