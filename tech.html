@@ -231,21 +231,22 @@ function nextId(){
   return "LMK-"+String(mx+1).padStart(4,"0");
 }
 
-/* Fire-and-forget background sync to Google Apps Script.
-   Uses mode:"no-cors" + redirect:"follow" with a plain-text body so the browser
-   never issues a CORS preflight and never blocks/throws waiting on a response —
-   the UI has already updated from local state before this is even called. */
+/* Background sync to Google Apps Script.
+   Uses Content-Type text/plain to avoid CORS preflight while preserving
+   the POST body through GAS's redirect chain (needed for email notifications). */
 function syncBg(action,body){
   if(LOCAL_MODE){localSave();return}
   try{
     var sep=API.indexOf("?")>-1?"&":"?";
     fetch(API+sep+"action="+action,{
       method:"POST",
-      mode:"no-cors",
       redirect:"follow",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},
       body:JSON.stringify(body||{})
-    }).catch(function(){/* opaque/no-cors response — nothing to read, ignore */});
-  }catch(e){/* never let a sync failure affect the UI */}
+    }).then(function(r){return r.text()})
+      .then(function(){})
+      .catch(function(){/* non-fatal */});
+  }catch(e){/* never block UI */}
 }
 function loadAll(){
   if(LOCAL_MODE){
