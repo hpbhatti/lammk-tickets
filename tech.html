@@ -339,7 +339,7 @@ function syncBg(action, body, localId){
   if(!API||API==="YOUR_APPS_SCRIPT_URL_HERE") return;
   var sep=API.indexOf("?")>-1?"&":"?";
   try{
-    fetch(API+sep+"action="+encodeURIComponent(action),{
+    fetch(API+sep+"action="+encodeURIComponent(action)+"&_="+Date.now(),{
       method:"POST",
       redirect:"follow",
       headers:{"Content-Type":"text/plain;charset=utf-8"},
@@ -363,14 +363,16 @@ function syncBg(action, body, localId){
 }
 
 function loadAll(){
+  try{localStorage.removeItem("lammk_data")}catch(e){}
   if(API&&API!=="YOUR_APPS_SCRIPT_URL_HERE"){
     var sep=API.indexOf("?")>-1?"&":"?";
     Promise.all([
-      fetch(API+sep+"action=list",{redirect:"follow"}).then(function(r){return r.json()}),
-      fetch(API+sep+"action=sla_get",{redirect:"follow"}).then(function(r){return r.json()})
+      fetch(API+sep+"action=list&_="+Date.now(),{redirect:"follow",cache:"no-store"}).then(function(r){return r.json()}),
+      fetch(API+sep+"action=sla_get&_="+Date.now(),{redirect:"follow",cache:"no-store"}).then(function(r){return r.json()})
     ]).then(function(arr){
       if(arr[0]&&arr[0].ok&&Array.isArray(arr[0].items)){
         items=arr[0].items;
+        console.log("API returned "+items.length+" tickets: "+items.map(function(t){return t.id}).join(", "));
       }
       if(arr[1]&&arr[1].ok&&arr[1].sla)sla=arr[1].sla;
       calcNextId();
@@ -648,7 +650,7 @@ function delTicket(){
   render();
   if(API&&API!=="YOUR_APPS_SCRIPT_URL_HERE"){
     var sep=API.indexOf("?")>-1?"&":"?";
-    fetch(API+sep+"action=delete&id="+openId,{method:"POST",redirect:"follow"}).catch(function(){});
+    fetch(API+sep+"action=delete&id="+openId+"&_="+Date.now(),{method:"POST",redirect:"follow"}).catch(function(){});
   }
 }
 
