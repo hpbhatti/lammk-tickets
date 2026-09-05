@@ -268,7 +268,12 @@ function render(){
   var rows=items.filter(function(t){
     if(st&&t.status!==st)return false;if(md&&t.module!==md)return false;
     if(q){var s=(t.id+" "+t.title+" "+t.problem+" "+t.requester).toLowerCase();if(s.indexOf(q)<0)return false}return true
-  }).sort(function(a,b){var srt=$("qSrt")?$("qSrt").value:"rank";var da=a.status==="done"?1:0,db=b.status==="done"?1:0;if(da!==db)return da-db;var ra=Number(a.rank)>0?Number(a.rank):999,rb=Number(b.rank)>0?Number(b.rank):999;if(srt==="rank"){if(ra!==rb)return ra-rb;return b.created.localeCompare(a.created)}if(srt==="newest"){var cd=b.created.localeCompare(a.created);if(cd!==0)return cd;return ra-rb}if(srt==="status"){var so={new:1,review:2,approved:3,scheduled:4,deferred:5,rejected:6,done:7};var sd=(so[a.status]||9)-(so[b.status]||9);if(sd!==0)return sd;if(ra!==rb)return ra-rb;return b.created.localeCompare(a.created)}if(srt==="impact"){var io={high:1,medium:2,low:3};var idf=(io[a.impact]||9)-(io[b.impact]||9);if(idf!==0)return idf;if(ra!==rb)return ra-rb;return b.created.localeCompare(a.created)}return 0});
+  }).sort(function(a,b){var srt=$("qSrt")?$("qSrt").value:"rank";
+    if(srt==="id_asc"||srt==="id_desc"){
+      var na=parseInt((String(a.id).match(/(\d+)/)||[0,0])[1],10)||0,nb=parseInt((String(b.id).match(/(\d+)/)||[0,0])[1],10)||0;
+      return srt==="id_asc"?na-nb:nb-na;
+    }
+    var da=a.status==="done"?1:0,db=b.status==="done"?1:0;if(da!==db)return da-db;var ra=Number(a.rank)>0?Number(a.rank):999,rb=Number(b.rank)>0?Number(b.rank):999;if(srt==="rank"){if(ra!==rb)return ra-rb;return b.created.localeCompare(a.created)}if(srt==="newest"){var cd=b.created.localeCompare(a.created);if(cd!==0)return cd;return ra-rb}if(srt==="status"){var so={new:1,review:2,approved:3,scheduled:4,deferred:5,rejected:6,done:7};var sd=(so[a.status]||9)-(so[b.status]||9);if(sd!==0)return sd;if(ra!==rb)return ra-rb;return b.created.localeCompare(a.created)}if(srt==="impact"){var io={high:1,medium:2,low:3};var idf=(io[a.impact]||9)-(io[b.impact]||9);if(idf!==0)return idf;if(ra!==rb)return ra-rb;return b.created.localeCompare(a.created)}return 0});
   var html="";
   for(var i=0;i<rows.length;i++){var t=rows[i];
     html+='<tr><td class="id">'+t.id+'</td><td>'+esc(t.title)+'</td><td>'+(MOD[t.module]||MOD.other)[lang]+'</td>'+
@@ -376,11 +381,6 @@ function addCRLink(){
   api("cr_update",{id:t.id,links:t.links,log:t.log}).then(function(){$("mLU").value="";$("mLL").value="";render();openCR(openId)}).catch(function(){alert("Error")});
 }
 
-function delCR(){
-  if(!confirm(lang==="ar"?"حذف نهائياً؟":"Delete permanently?"))return;
-  api("cr_delete&id="+openId).then(function(){items=items.filter(function(x){return x.id!==openId});$("modal").classList.remove("on");render()}).catch(function(){alert("Error")});
-}
-
 function exportCSV(){
   var h=["ID","Title","Module","Problem","Urgency","Impact","Effort","Cost Min","Cost Max","Rank","Status","Decision","Target Release","Requester","Created"];
   var rows=items.map(function(t){return[t.id,t.title,(MOD[t.module]||MOD.other).en,t.problem,(URG[t.urgency]||{}).en||"",(IMP[t.impact]||{}).en||"",(EFF[t.effort]||{}).en||"",t.costMin||"",t.costMax||"",(t.rank||"")+" "+(CR_STS[t.status]||{}).en||"",t.decision||"",t.targetRelease||"",t.requester,fmt(t.created)]});
@@ -452,7 +452,7 @@ function setFilters(){
   $("qSt").innerHTML='<option value="">'+(lang==="ar"?"كل الحالات":"All")+'</option>';
   for(var i=0;i<sts.length;i++)$("qSt").innerHTML+='<option value="'+sts[i]+'">'+csn(sts[i])+'</option>';
   $("qMd").innerHTML='<option value="">'+(lang==="ar"?"كل الوحدات":"All")+'</option>';
-  var sOpts=[["rank",lang==="ar"?"الترتيب (الأعلى أولاً)":"Rank (highest first)"],["newest",lang==="ar"?"الأحدث أولاً":"Newest first"],["status",lang==="ar"?"حسب الحالة":"By status"],["impact",lang==="ar"?"حسب التأثير":"By impact"]];
+  var sOpts=[["rank",lang==="ar"?"الترتيب (الأعلى أولاً)":"Rank (highest first)"],["newest",lang==="ar"?"الأحدث أولاً":"Newest first"],["id_asc",lang==="ar"?"الرمز (تصاعدي)":"ID (ascending)"],["id_desc",lang==="ar"?"الرمز (تنازلي)":"ID (descending)"],["status",lang==="ar"?"حسب الحالة":"By status"],["impact",lang==="ar"?"حسب التأثير":"By impact"]];
   $("qSrt").innerHTML="";for(var si=0;si<sOpts.length;si++)$("qSrt").innerHTML+='<option value="'+sOpts[si][0]+'">'+sOpts[si][1]+'</option>';
   var mks=Object.keys(MOD);for(var i=0;i<mks.length;i++)$("qMd").innerHTML+='<option value="'+mks[i]+'">'+(MOD[mks[i]])[lang]+'</option>';
 }
@@ -494,7 +494,6 @@ function initCR(){
   $("mClBtn").onclick=function(){$("modal").classList.remove("on")};
   if($("mSvBtn"))$("mSvBtn").onclick=saveCR;
   if($("mPostBtn"))$("mPostBtn").onclick=addComment;
-  if($("mDlBtn"))$("mDlBtn").onclick=delCR;
   if($("rpBld"))$("rpBld").onclick=buildReport;
   if($("rpPrt"))$("rpPrt").onclick=function(){buildReport();setTimeout(function(){window.print()},200)};
   ["qS","qSt","qMd","qSrt"].forEach(function(x){if($(x))$(x).addEventListener("input",render)});
