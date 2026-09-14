@@ -197,7 +197,7 @@ footer{text-align:center;color:var(--gr);font-size:11px;padding:14px}
       <div><label data-ar="عنوان التذكرة *" data-en="Title *">عنوان التذكرة *</label><input id="fT"></div>
       <div><label data-ar="مقدم التذكرة *" data-en="Reported by *">مقدم التذكرة *</label><input id="fR"></div>
       <div><label data-ar="الوحدة" data-en="Module">الوحدة</label><select id="fM"><option value="admin" data-ar="بوابة الإدارة" data-en="Admin Portal">بوابة الإدارة</option><option value="b2b" data-ar="بوابة الشركات" data-en="B2B Portal">بوابة الشركات</option><option value="driver" data-ar="تطبيق السائق" data-en="Driver App">تطبيق السائق</option><option value="b2c" data-ar="تطبيق الأفراد" data-en="B2C App">تطبيق الأفراد</option><option value="finance" data-ar="المالية والتسويات" data-en="Finance & Payouts">المالية والتسويات</option><option value="invoice" data-ar="الفوترة / ZATCA" data-en="Invoicing / ZATCA">الفوترة / ZATCA</option><option value="backend" data-ar="الخلفية التقنية" data-en="Backend">الخلفية التقنية</option><option value="other" data-ar="أخرى" data-en="Other">أخرى</option></select></div>
-      <div><label data-ar="النوع" data-en="Type">النوع</label><select id="fTy"><option value="bug" data-ar="عطل" data-en="Bug">عطل</option><option value="question" data-ar="استفسار" data-en="Question">استفسار</option><option value="data" data-ar="تصحيح بيانات" data-en="Data fix">تصحيح بيانات</option><option value="cr" data-ar="طلب تغيير" data-en="Change request">طلب تغيير</option><option value="enhancement" data-ar="تحسين" data-en="Enhancement">تحسين</option></select></div>
+      <div><label data-ar="النوع" data-en="Type">النوع</label><select id="fTy"><option value="bug" data-ar="عطل" data-en="Bug">عطل</option><option value="question" data-ar="استفسار" data-en="Question">استفسار</option><option value="data" data-ar="تصحيح بيانات" data-en="Data fix">تصحيح بيانات</option><option value="cr" data-ar="طلب تغيير" data-en="Change request">طلب تغيير</option><option value="enhancement" data-ar="تحسين" data-en="Enhancement">تحسين</option><option value="service" data-ar="طلب خدمة" data-en="Service Request">طلب خدمة</option></select></div>
       <div><label data-ar="الأولوية" data-en="Priority">الأولوية</label><select id="fPr"><option value="P1" data-ar="P1 — حرج" data-en="P1 — Critical">P1 — حرج</option><option value="P2" selected data-ar="P2 — مرتفع" data-en="P2 — High">P2 — مرتفع</option><option value="P3" data-ar="P3 — متوسط" data-en="P3 — Medium">P3 — متوسط</option><option value="P4" data-ar="P4 — منخفض" data-en="P4 — Low">P4 — منخفض</option></select></div>
       <div><label data-ar="تاريخ الاستحقاق" data-en="Due date">تاريخ الاستحقاق</label><input id="fDu" type="date"></div>
       <div style="display:none"><label data-ar="مرجع (رقم طلب / شركة)" data-en="Reference (Order / Co. ID)">مرجع (رقم طلب / شركة)</label><input id="fRf"></div>
@@ -207,8 +207,8 @@ footer{text-align:center;color:var(--gr);font-size:11px;padding:14px}
     <div class="ra"><button class="btn btn-o" id="aB" data-ar="إضافة التذكرة" data-en="Add Ticket">إضافة التذكرة</button><button class="btn btn-g" id="cL" data-ar="مسح" data-en="Clear">مسح</button></div>
   </div>
   <div class="card"><h2 data-ar="التذاكر" data-en="Tickets">التذاكر</h2>
-    <div class="filters"><input id="qS" placeholder="بحث…"><select id="qSt"></select><select id="qPr"></select><select id="qMd"></select></div>
-    <div class="tw"><table><thead><tr><th data-ar="الرقم" data-en="ID">الرقم</th><th data-ar="العنوان" data-en="Title">العنوان</th><th data-ar="الوحدة" data-en="Module">الوحدة</th><th data-ar="الأولوية" data-en="Priority">الأولوية</th><th data-ar="الحالة" data-en="Status">الحالة</th><th data-ar="مُسند إلى" data-en="Assigned to">مُسند إلى</th><th data-ar="مرفقات" data-en="Files">مرفقات</th><th data-ar="الإنشاء" data-en="Created">الإنشاء</th><th data-ar="الاستحقاق" data-en="Due">الاستحقاق</th><th></th></tr></thead><tbody id="tb"></tbody></table></div>
+    <div class="filters"><input id="qS" placeholder="بحث…"><select id="qSt"></select><select id="qPr"></select><select id="qMd"></select><select id="qTy"></select></div>
+    <div class="tw"><table><thead><tr><th data-ar="الرقم" data-en="ID">الرقم</th><th data-ar="العنوان" data-en="Title">العنوان</th><th data-ar="الوحدة" data-en="Module">الوحدة</th><th data-ar="النوع" data-en="Type">النوع</th><th data-ar="الأولوية" data-en="Priority">الأولوية</th><th data-ar="الحالة" data-en="Status">الحالة</th><th data-ar="مُسند إلى" data-en="Assigned to">مُسند إلى</th><th data-ar="مرفقات" data-en="Files">مرفقات</th><th data-ar="الإنشاء" data-en="Created">الإنشاء</th><th data-ar="الاستحقاق" data-en="Due">الاستحقاق</th><th></th></tr></thead><tbody id="tb"></tbody></table></div>
     <div class="empty" id="em" data-ar="لا توجد تذاكر." data-en="No tickets.">لا توجد تذاكر.</div>
   </div>
 </div>
@@ -287,7 +287,7 @@ var ROLE="business",API="https://script.google.com/macros/s/AKfycbyXHwSBfmbBb6s3
 
 /* Lammk Ticketing — shared core */
 const MOD={admin:{ar:"بوابة الإدارة",en:"Admin Portal"},b2b:{ar:"بوابة الشركات",en:"B2B Portal"},driver:{ar:"تطبيق السائق",en:"Driver App"},b2c:{ar:"تطبيق الأفراد",en:"B2C App"},finance:{ar:"المالية والتسويات",en:"Finance & Payouts"},invoice:{ar:"الفوترة / ZATCA",en:"Invoicing / ZATCA"},backend:{ar:"الخلفية التقنية",en:"Backend"},other:{ar:"أخرى",en:"Other"}};
-const TYP={bug:{ar:"عطل",en:"Bug"},question:{ar:"استفسار",en:"Question"},data:{ar:"تصحيح بيانات",en:"Data fix"},cr:{ar:"طلب تغيير",en:"Change request"},enhancement:{ar:"تحسين",en:"Enhancement"}};
+const TYP={bug:{ar:"عطل",en:"Bug"},question:{ar:"استفسار",en:"Question"},data:{ar:"تصحيح بيانات",en:"Data fix"},cr:{ar:"طلب تغيير",en:"Change request"},enhancement:{ar:"تحسين",en:"Enhancement"},service:{ar:"طلب خدمة",en:"Service Request"}};
 const SCLS={open:"s-open",progress:"s-prog",waiting:"s-wait",resolved:"s-done",closed:"s-closed"};
 const STS=["open","progress","waiting","resolved","closed"];
 const SN={ar:{open:"مفتوحة",progress:"قيد المعالجة",waiting:"بانتظار العميل",resolved:"تم الحل",closed:"مغلقة"},en:{open:"Open",progress:"In progress",waiting:"Waiting on customer",resolved:"Resolved",closed:"Closed"}};
@@ -302,8 +302,8 @@ function fmtDT(d){if(!d||d==="")return"—";var x=new Date(d);if(isNaN(x))return
 function sn(k){return(SN[lang]||SN.ar)[k]||k}
 function pd(k){return(PD[lang]||PD.ar)[k]||k}
 function sf(p){return sla[p]||{resp:24,res:120};}
-var L_AR={hrs:" ساعة",days:" يوم",noA:"لا توجد مرفقات",noT:"لا توجد تذاكر مطابقة.",pend:"لم يبدأ",noBr:"لا توجد تذاكر تجاوزت المستهدف.",noWt:"لا توجد تذاكر بانتظار العميل.",wNote:"الوقت في حالة «بانتظار العميل» مُستبعد من احتساب زمن الحل.",view:"عرض",needT:"الرجاء إدخال العنوان واسم مقدم التذكرة.",badU:"رابط غير صحيح",rmLk:"إزالة هذا الرابط؟",delC:"حذف نهائياً؟",pinE:"رمز غير صحيح",conn:"خطأ في الاتصال",allSt:"كل الحالات",allPr:"كل الأولويات",allMd:"كل الوحدات",created:"أنشأ التذكرة",changed:"غيّر",status:"الحالة",prio:"الأولوية",assign:"مُسند إلى",addedL:"أضاف رابطاً",removedL:"أزال رابطاً",bizCl:"أكّد إغلاق التذكرة (تم التحقق من الحل)",bizRe:"أعاد فتح التذكرة (لم يُحل العطل)",bizEd:"عدّل بيانات التذكرة",reporter:"مقدم التذكرة",module:"الوحدة",type:"النوع",ref:"المرجع",period:"الفترة",issued:"تاريخ الإصدار",by:"إعداد",tickets:"التذاكر",received:"مستلمة",resolved:"تم حلها",openL:"مفتوحة",avgR:"متوسط الاستجابة",avgX:"متوسط الحل",comp:"نسبة الالتزام",within:"ضمن المستهدف",rTgt:"هدف الاستجابة",xTgt:"هدف الحل",s1:"1. الملخص التنفيذي",s2:"2. الالتزام بمستوى الخدمة",s3:"3. التوزيع",s4:"4. أعمار التذاكر المفتوحة",s5:"5. التذاكر المتجاوزة للمستهدف",s6:"6. تذاكر بانتظار العميل",s7:"7. سجل التذاكر التفصيلي",byPr:"حسب الأولوية",bySt:"حسب الحالة",byMd:"حسب الوحدة",byTy:"حسب النوع",repTi:"تقرير التذاكر والدعم الفني",repSu:"منصة لمّك — فترة الدعم والصيانة"};
-var L_EN={hrs:" h",days:" d",noA:"No attachments",noT:"No matching tickets.",pend:"Not started",noBr:"No tickets outside target.",noWt:"None waiting.",wNote:"Time in Waiting on customer is excluded from resolution time.",view:"View",needT:"Please enter title and reporter.",badU:"Invalid URL",rmLk:"Remove this link?",delC:"Delete permanently?",pinE:"Incorrect code",conn:"Connection error",allSt:"All statuses",allPr:"All priorities",allMd:"All modules",created:"created the ticket",changed:"changed",status:"status",prio:"priority",assign:"assigned to",addedL:"added link",removedL:"removed link",bizCl:"Confirmed closure (fix verified)",bizRe:"Reopened (issue not resolved)",bizEd:"Edited ticket details",reporter:"Reporter",module:"Module",type:"Type",ref:"Ref",period:"Period",issued:"Issued",by:"By",tickets:"Tickets",received:"Received",resolved:"Resolved",openL:"Open",avgR:"Avg response",avgX:"Avg resolution",comp:"Compliance",within:"Within target",rTgt:"Response target",xTgt:"Resolution target",s1:"1. Executive summary",s2:"2. SLA compliance",s3:"3. Breakdown",s4:"4. Age of open tickets",s5:"5. Tickets outside target",s6:"6. Waiting on customer",s7:"7. Detailed ticket log",byPr:"By priority",bySt:"By status",byMd:"By module",byTy:"By type",repTi:"Ticket and Support Report",repSu:"Lammk — Support and Maintenance"};
+var L_AR={hrs:" ساعة",days:" يوم",noA:"لا توجد مرفقات",noT:"لا توجد تذاكر مطابقة.",pend:"لم يبدأ",noBr:"لا توجد تذاكر تجاوزت المستهدف.",noWt:"لا توجد تذاكر بانتظار العميل.",wNote:"الوقت في حالة «بانتظار العميل» مُستبعد من احتساب زمن الحل.",view:"عرض",needT:"الرجاء إدخال العنوان واسم مقدم التذكرة.",badU:"رابط غير صحيح",rmLk:"إزالة هذا الرابط؟",delC:"حذف نهائياً؟",pinE:"رمز غير صحيح",conn:"خطأ في الاتصال",allSt:"كل الحالات",allPr:"كل الأولويات",allMd:"كل الوحدات",allTy:"كل الأنواع",created:"أنشأ التذكرة",changed:"غيّر",status:"الحالة",prio:"الأولوية",assign:"مُسند إلى",addedL:"أضاف رابطاً",removedL:"أزال رابطاً",bizCl:"أكّد إغلاق التذكرة (تم التحقق من الحل)",bizRe:"أعاد فتح التذكرة (لم يُحل العطل)",bizEd:"عدّل بيانات التذكرة",reporter:"مقدم التذكرة",module:"الوحدة",type:"النوع",ref:"المرجع",period:"الفترة",issued:"تاريخ الإصدار",by:"إعداد",tickets:"التذاكر",received:"مستلمة",resolved:"تم حلها",openL:"مفتوحة",avgR:"متوسط الاستجابة",avgX:"متوسط الحل",comp:"نسبة الالتزام",within:"ضمن المستهدف",rTgt:"هدف الاستجابة",xTgt:"هدف الحل",s1:"1. الملخص التنفيذي",s2:"2. الالتزام بمستوى الخدمة",s3:"3. التوزيع",s4:"4. أعمار التذاكر المفتوحة",s5:"5. التذاكر المتجاوزة للمستهدف",s6:"6. تذاكر بانتظار العميل",s7:"7. سجل التذاكر التفصيلي",byPr:"حسب الأولوية",bySt:"حسب الحالة",byMd:"حسب الوحدة",byTy:"حسب النوع",repTi:"تقرير التذاكر والدعم الفني",repSu:"منصة لمّك — فترة الدعم والصيانة"};
+var L_EN={hrs:" h",days:" d",noA:"No attachments",noT:"No matching tickets.",pend:"Not started",noBr:"No tickets outside target.",noWt:"None waiting.",wNote:"Time in Waiting on customer is excluded from resolution time.",view:"View",needT:"Please enter title and reporter.",badU:"Invalid URL",rmLk:"Remove this link?",delC:"Delete permanently?",pinE:"Incorrect code",conn:"Connection error",allSt:"All statuses",allPr:"All priorities",allMd:"All modules",allTy:"All types",created:"created the ticket",changed:"changed",status:"status",prio:"priority",assign:"assigned to",addedL:"added link",removedL:"removed link",bizCl:"Confirmed closure (fix verified)",bizRe:"Reopened (issue not resolved)",bizEd:"Edited ticket details",reporter:"Reporter",module:"Module",type:"Type",ref:"Ref",period:"Period",issued:"Issued",by:"By",tickets:"Tickets",received:"Received",resolved:"Resolved",openL:"Open",avgR:"Avg response",avgX:"Avg resolution",comp:"Compliance",within:"Within target",rTgt:"Response target",xTgt:"Resolution target",s1:"1. Executive summary",s2:"2. SLA compliance",s3:"3. Breakdown",s4:"4. Age of open tickets",s5:"5. Tickets outside target",s6:"6. Waiting on customer",s7:"7. Detailed ticket log",byPr:"By priority",bySt:"By status",byMd:"By module",byTy:"By type",repTi:"Ticket and Support Report",repSu:"Lammk — Support and Maintenance"};
 function L(k){return(lang==="ar"?L_AR:L_EN)[k]||k}
 
 /* Business hours: Sun–Thu 9–18 AST */
@@ -359,27 +359,22 @@ function loadAll(){
     render();
     return;
   }
-  /* Backend configured — fetch from Google Sheet as source of truth.
+  /* Backend configured — single combined call (tickets + SLA in one response).
+     Halves the round-trips vs. the previous separate list/sla_get calls.
      Google Apps Script redirects (302) to script.googleusercontent.com;
      we must follow the redirect and read JSON from the final response. */
   var sep=API.indexOf("?")>-1?"&":"?";
-  Promise.all([
-    fetch(API+sep+"action=list",{redirect:"follow"}).then(function(r){
-      if(!r.ok)throw new Error("list HTTP "+r.status);
-      return r.json();
-    }),
-    fetch(API+sep+"action=sla_get",{redirect:"follow"}).then(function(r){
-      if(!r.ok)throw new Error("sla HTTP "+r.status);
-      return r.json();
-    })
-  ]).then(function(arr){
-    if(arr[0]&&arr[0].ok&&Array.isArray(arr[0].items)){
-      items=arr[0].items;
+  fetch(API+sep+"action=init",{redirect:"follow"}).then(function(r){
+    if(!r.ok)throw new Error("init HTTP "+r.status);
+    return r.json();
+  }).then(function(d){
+    if(d&&d.ok&&Array.isArray(d.items)){
+      items=d.items;
       console.log("✅ Loaded "+items.length+" tickets from Google Sheet");
     }else{
-      console.warn("⚠️ API responded but items missing:",arr[0]);
+      console.warn("⚠️ API responded but items missing:",d);
     }
-    if(arr[1]&&arr[1].ok&&arr[1].sla)sla=arr[1].sla;
+    if(d&&d.ok&&d.sla)sla=d.sla;
     calcNextId();
     localSave();
     $("ldM").style.display="none";
@@ -418,14 +413,15 @@ function render(){
   $("kP").textContent=items.filter(function(t){return t.status==="progress"||t.status==="waiting"}).length;
   $("kD").textContent=items.filter(function(t){return t.status==="resolved"||t.status==="closed"}).length;
   $("kC").textContent=items.filter(function(t){return t.priority==="P1"&&isO(t)}).length;
-  var q=$("qS").value.trim().toLowerCase(),st=$("qSt").value,pr=$("qPr").value,md=$("qMd").value;
+  var q=$("qS").value.trim().toLowerCase(),st=$("qSt").value,pr=$("qPr").value,md=$("qMd").value,ty=$("qTy").value;
   var rows=items.filter(function(t){
-    if(st&&t.status!==st)return false;if(pr&&t.priority!==pr)return false;if(md&&t.module!==md)return false;
+    if(st&&t.status!==st)return false;if(pr&&t.priority!==pr)return false;if(md&&t.module!==md)return false;if(ty&&t.type!==ty)return false;
     if(q){var s=(t.id+" "+t.title+" "+t.desc+" "+t.reporter+" "+(t.assignee||"")+" "+(t.ref||"")).toLowerCase();if(s.indexOf(q)<0)return false}return true
   }).sort(function(a,b){return (b.created||"").localeCompare(a.created||"")});
   var html="";
   for(var i=0;i<rows.length;i++){var t=rows[i];
     html+='<tr><td class="id">'+t.id+'</td><td>'+esc(t.title)+'</td><td>'+(MOD[t.module]||MOD.other)[lang]+'</td>'+
+    '<td>'+(TYP[t.type]||TYP.bug)[lang]+'</td>'+
     '<td><span class="tag p-'+(t.priority||"P2").toLowerCase()+'">'+t.priority+'</span></td>'+
     '<td><span class="tag '+(SCLS[t.status]||"s-open")+'">'+sn(t.status)+'</span></td>'+
     '<td>'+esc(t.assignee||"—")+'</td>'+
@@ -691,12 +687,13 @@ function setFilters(){
   $("qSt").innerHTML='<option value="">'+L("allSt")+'</option>';for(var i=0;i<STS.length;i++)$("qSt").innerHTML+='<option value="'+STS[i]+'">'+sn(STS[i])+'</option>';
   $("qPr").innerHTML='<option value="">'+L("allPr")+'</option><option>P1</option><option>P2</option><option>P3</option><option>P4</option>';
   var mks=Object.keys(MOD);$("qMd").innerHTML='<option value="">'+L("allMd")+'</option>';for(var i=0;i<mks.length;i++)$("qMd").innerHTML+='<option value="'+mks[i]+'">'+MOD[mks[i]][lang]+'</option>';
+  var tks=Object.keys(TYP);$("qTy").innerHTML='<option value="">'+L("allTy")+'</option>';for(var i=0;i<tks.length;i++)$("qTy").innerHTML+='<option value="'+tks[i]+'">'+TYP[tks[i]][lang]+'</option>';
   
   var pairs=[["kTl",lang==="ar"?"إجمالي":"Total"],["kOl",lang==="ar"?"مفتوحة":"Open"],["kPl",lang==="ar"?"قيد المعالجة":"In progress"],["kDl",lang==="ar"?"تم الحل":"Resolved"],["kCl",lang==="ar"?"حرجة P1":"Critical P1"]];
   for(var i=0;i<pairs.length;i++){var e=$(pairs[i][0]);if(e)e.textContent=pairs[i][1]}
   
   var ths=$("tb")&&$("tb").closest("table")?$("tb").closest("table").querySelectorAll("th"):[];
-  var thL=lang==="ar"?["الرقم","العنوان","الوحدة","الأولوية","الحالة","مُسند إلى","مرفقات","الإنشاء","الاستحقاق",""]:["ID","Title","Module","Priority","Status","Assigned to","Files","Created","Due",""];
+  var thL=lang==="ar"?["الرقم","العنوان","الوحدة","النوع","الأولوية","الحالة","مُسند إلى","مرفقات","الإنشاء","الاستحقاق",""]:["ID","Title","Module","Type","Priority","Status","Assigned to","Files","Created","Due",""];
   for(var i=0;i<ths.length&&i<thL.length;i++)ths[i].textContent=thL[i];
   
   if($("em"))$("em").textContent=L("noT");
@@ -740,7 +737,7 @@ function init(){
   $("rpBld").onclick=buildReport;
   $("rpPrt").onclick=function(){buildReport();setTimeout(function(){window.print()},200)};
   
-  ["qS","qSt","qPr","qMd"].forEach(function(x){$(x).addEventListener("input",render)});
+  ["qS","qSt","qPr","qMd","qTy"].forEach(function(x){$(x).addEventListener("input",render)});
   
   setFilters();
   loadAll();
