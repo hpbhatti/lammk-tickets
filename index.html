@@ -362,34 +362,31 @@ function loadAll(){
     render();
     return;
   }
-  /* Backend configured — fetch from Google Sheet as source of truth.
-     Google Apps Script redirects (302) to script.googleusercontent.com;
-     we must follow the redirect and read JSON from the final response. */
-  var sep=API.indexOf("?")>-1?"&":"?";
+  /* Fast path: read tickets + SLA from Firebase (mirrored by Apps Script
+     on every create/update). Falls back to localStorage if Firebase fails. */
+  var FB="https://lammk-tickets-default-rtdb.asia-southeast1.firebasedatabase.app";
   Promise.all([
-    fetch(API+sep+"action=list",{redirect:"follow"}).then(function(r){
-      if(!r.ok)throw new Error("list HTTP "+r.status);
+    fetch(FB+"/tickets.json").then(function(r){
+      if(!r.ok)throw new Error("tickets HTTP "+r.status);
       return r.json();
     }),
-    fetch(API+sep+"action=sla_get",{redirect:"follow"}).then(function(r){
+    fetch(FB+"/sla.json").then(function(r){
       if(!r.ok)throw new Error("sla HTTP "+r.status);
       return r.json();
     })
   ]).then(function(arr){
-    if(arr[0]&&arr[0].ok&&Array.isArray(arr[0].items)){
-      items=arr[0].items;
-      console.log("✅ Loaded "+items.length+" tickets from Google Sheet");
-    }else{
-      console.warn("⚠️ API responded but items missing:",arr[0]);
-    }
-    if(arr[1]&&arr[1].ok&&arr[1].sla)sla=arr[1].sla;
+    var ticketsObj=arr[0]||{};
+    items=Object.keys(ticketsObj).map(function(k){return ticketsObj[k]});
+    items.sort(function(a,b){return (b.created||"").localeCompare(a.created||"")});
+    console.log("✅ Loaded "+items.length+" tickets from Firebase");
+    if(arr[1])sla=arr[1];
     calcNextId();
     localSave();
     $("ldM").style.display="none";
     $("vT").style.display="";
     render();
   }).catch(function(e){
-    console.error("❌ API fetch failed:",e);
+    console.error("❌ Firebase fetch failed:",e);
     localLoad();
     calcNextId();
     $("ldM").style.display="none";
