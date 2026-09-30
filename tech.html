@@ -275,9 +275,15 @@ function loadAll(){
     $("ldM").style.display="none";$("vT").style.display="";render();
     return;
   }
-  Promise.all([api("list"),api("sla_get")]).then(function(arr){
-    if(arr[0].ok)items=arr[0].items;
-    if(arr[1].ok&&arr[1].sla)sla=arr[1].sla;
+  var FB="https://lammk-tickets-default-rtdb.asia-southeast1.firebasedatabase.app";
+  Promise.all([
+    fetch(FB+"/tickets.json").then(function(r){return r.json()}),
+    fetch(FB+"/sla.json").then(function(r){return r.json()})
+  ]).then(function(arr){
+    var ticketsObj=arr[0]||{};
+    items=Object.keys(ticketsObj).map(function(k){return ticketsObj[k]});
+    items.sort(function(a,b){return (b.created||"").localeCompare(a.created||"")});
+    if(arr[1])sla=arr[1];
     $("ldM").style.display="none";$("vT").style.display="";render();
   }).catch(function(e){console.error(e);$("ldM").textContent=L("conn")});
 }
