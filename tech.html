@@ -162,6 +162,8 @@ footer{text-align:center;color:var(--gr);font-size:11px;padding:14px}
       <div><label data-ar="تغيير الحالة" data-en="Change status">تغيير الحالة</label><select id="mStSel"><option value="open" data-ar="مفتوحة" data-en="Open">مفتوحة</option><option value="progress" data-ar="قيد المعالجة" data-en="In progress">قيد المعالجة</option><option value="waiting" data-ar="بانتظار العميل" data-en="Waiting">بانتظار العميل</option><option value="resolved" data-ar="تم الحل" data-en="Resolved">تم الحل</option><option value="closed" data-ar="مغلقة" data-en="Closed">مغلقة</option></select></div>
       <div><label data-ar="تغيير الأولوية" data-en="Change priority">تغيير الأولوية</label><select id="mPrSel"><option>P1</option><option>P2</option><option>P3</option><option>P4</option></select></div>
       <div><label data-ar="مُسند إلى" data-en="Assigned to">مُسند إلى</label><input id="mAsInp"></div>
+      <div><label data-ar="تاريخ الاستحقاق" data-en="Due date">تاريخ الاستحقاق</label><input id="mDuInp" type="date"></div>
+      <div><label data-ar="سبب تغيير التاريخ" data-en="Reason for date change">سبب تغيير التاريخ</label><input id="mDuWhy" placeholder="مطلوب عند تأخير التاريخ | Required if the date moves later"></div>
     </div>
   <div style="margin-top:12px"><label data-ar="ملخص الحل" data-en="Resolution Summary">ملخص الحل</label><textarea id="mResSummary" style="min-height:50px" placeholder="وصف مختصر للحل المُطبّق… | Brief description of the resolution…"></textarea></div>
   <div class="ra"><button class="btn btn-o" id="mSvBtn" data-ar="حفظ" data-en="Save">حفظ</button><button class="btn btn-g" id="mClBtn" data-ar="إغلاق" data-en="Close">إغلاق</button><button class="btn btn-d" id="mDlBtn" data-ar="حذف" data-en="Delete">حذف</button></div>
@@ -194,8 +196,8 @@ function fmtDT(d){if(!d||d==="")return"—";var x=new Date(d);if(isNaN(x))return
 function sn(k){return(SN[lang]||SN.ar)[k]||k}
 function pd(k){return(PD[lang]||PD.ar)[k]||k}
 function sf(p){return sla[p]||{resp:24,res:120};}
-var L_AR={hrs:" ساعة",days:" يوم",noA:"لا توجد مرفقات",noT:"لا توجد تذاكر مطابقة.",pend:"لم يبدأ",noBr:"لا توجد تذاكر تجاوزت المستهدف.",noWt:"لا توجد تذاكر بانتظار العميل.",wNote:"الوقت في حالة «بانتظار العميل» مُستبعد من احتساب زمن الحل.",view:"عرض",needT:"الرجاء إدخال العنوان واسم مقدم التذكرة.",badU:"رابط غير صحيح",rmLk:"إزالة هذا الرابط؟",delC:"حذف نهائياً؟",pinE:"رمز غير صحيح",conn:"خطأ في الاتصال",allSt:"كل الحالات",allPr:"كل الأولويات",allMd:"كل الوحدات",created:"أنشأ التذكرة",changed:"غيّر",status:"الحالة",prio:"الأولوية",assign:"مُسند إلى",addedL:"أضاف رابطاً",removedL:"أزال رابطاً",bizCl:"أكّد إغلاق التذكرة (تم التحقق من الحل)",bizRe:"أعاد فتح التذكرة (لم يُحل العطل)",reporter:"مقدم التذكرة",module:"الوحدة",type:"النوع",ref:"المرجع",period:"الفترة",issued:"تاريخ الإصدار",by:"إعداد",tickets:"التذاكر",received:"مستلمة",resolved:"تم حلها",openL:"مفتوحة",avgR:"متوسط الاستجابة",avgX:"متوسط الحل",comp:"نسبة الالتزام",within:"ضمن المستهدف",rTgt:"هدف الاستجابة",xTgt:"هدف الحل",s1:"1. الملخص التنفيذي",s2:"2. الالتزام بمستوى الخدمة",s3:"3. التوزيع",s4:"4. أعمار التذاكر المفتوحة",s5:"5. التذاكر المتجاوزة للمستهدف",s6:"6. تذاكر بانتظار العميل",s7:"7. سجل التذاكر التفصيلي",byPr:"حسب الأولوية",bySt:"حسب الحالة",byMd:"حسب الوحدة",byTy:"حسب النوع",repTi:"تقرير التذاكر والدعم الفني",repSu:"منصة لمّك — فترة الدعم والصيانة",estEff:"الجهد المُقدّر",actEff:"الجهد الفعلي",effUpd:"تحديث الجهد",resSumm:"ملخص الحل",needRes:"يجب إدخال ملخص الحل والجهد الفعلي قبل تغيير الحالة إلى تم الحل أو مغلقة."};
-var L_EN={hrs:" h",days:" d",noA:"No attachments",noT:"No matching tickets.",pend:"Not started",noBr:"No tickets outside target.",noWt:"None waiting.",wNote:"Time in Waiting on customer is excluded from resolution time.",view:"View",needT:"Please enter title and reporter.",badU:"Invalid URL",rmLk:"Remove this link?",delC:"Delete permanently?",pinE:"Incorrect code",conn:"Connection error",allSt:"All statuses",allPr:"All priorities",allMd:"All modules",created:"created the ticket",changed:"changed",status:"status",prio:"priority",assign:"assigned to",addedL:"added link",removedL:"removed link",bizCl:"Confirmed closure (fix verified)",bizRe:"Reopened (issue not resolved)",reporter:"Reporter",module:"Module",type:"Type",ref:"Ref",period:"Period",issued:"Issued",by:"By",tickets:"Tickets",received:"Received",resolved:"Resolved",openL:"Open",avgR:"Avg response",avgX:"Avg resolution",comp:"Compliance",within:"Within target",rTgt:"Response target",xTgt:"Resolution target",s1:"1. Executive summary",s2:"2. SLA compliance",s3:"3. Breakdown",s4:"4. Age of open tickets",s5:"5. Tickets outside target",s6:"6. Waiting on customer",s7:"7. Detailed ticket log",byPr:"By priority",bySt:"By status",byMd:"By module",byTy:"By type",repTi:"Ticket and Support Report",repSu:"Lammk — Support and Maintenance",estEff:"Estimated effort",actEff:"Actual effort",effUpd:"Effort updated",resSumm:"Resolution summary",needRes:"Resolution summary and actual effort are required before setting status to Resolved or Closed."};
+var L_AR={dueChg:"تغيير تاريخ الاستحقاق",needDueWhy:"الرجاء كتابة سبب قصير عند تأخير تاريخ الاستحقاق.",hrs:" ساعة",days:" يوم",noA:"لا توجد مرفقات",noT:"لا توجد تذاكر مطابقة.",pend:"لم يبدأ",noBr:"لا توجد تذاكر تجاوزت المستهدف.",noWt:"لا توجد تذاكر بانتظار العميل.",wNote:"الوقت في حالة «بانتظار العميل» مُستبعد من احتساب زمن الحل.",view:"عرض",needT:"الرجاء إدخال العنوان واسم مقدم التذكرة.",badU:"رابط غير صحيح",rmLk:"إزالة هذا الرابط؟",delC:"حذف نهائياً؟",pinE:"رمز غير صحيح",conn:"خطأ في الاتصال",allSt:"كل الحالات",allPr:"كل الأولويات",allMd:"كل الوحدات",created:"أنشأ التذكرة",changed:"غيّر",status:"الحالة",prio:"الأولوية",assign:"مُسند إلى",addedL:"أضاف رابطاً",removedL:"أزال رابطاً",bizCl:"أكّد إغلاق التذكرة (تم التحقق من الحل)",bizRe:"أعاد فتح التذكرة (لم يُحل العطل)",reporter:"مقدم التذكرة",module:"الوحدة",type:"النوع",ref:"المرجع",period:"الفترة",issued:"تاريخ الإصدار",by:"إعداد",tickets:"التذاكر",received:"مستلمة",resolved:"تم حلها",openL:"مفتوحة",avgR:"متوسط الاستجابة",avgX:"متوسط الحل",comp:"نسبة الالتزام",within:"ضمن المستهدف",rTgt:"هدف الاستجابة",xTgt:"هدف الحل",s1:"1. الملخص التنفيذي",s2:"2. الالتزام بمستوى الخدمة",s3:"3. التوزيع",s4:"4. أعمار التذاكر المفتوحة",s5:"5. التذاكر المتجاوزة للمستهدف",s6:"6. تذاكر بانتظار العميل",s7:"7. سجل التذاكر التفصيلي",byPr:"حسب الأولوية",bySt:"حسب الحالة",byMd:"حسب الوحدة",byTy:"حسب النوع",repTi:"تقرير التذاكر والدعم الفني",repSu:"منصة لمّك — فترة الدعم والصيانة",estEff:"الجهد المُقدّر",actEff:"الجهد الفعلي",effUpd:"تحديث الجهد",resSumm:"ملخص الحل",needRes:"يجب إدخال ملخص الحل والجهد الفعلي قبل تغيير الحالة إلى تم الحل أو مغلقة."};
+var L_EN={dueChg:"Due date changed",needDueWhy:"Please enter a short reason when moving the due date later.",hrs:" h",days:" d",noA:"No attachments",noT:"No matching tickets.",pend:"Not started",noBr:"No tickets outside target.",noWt:"None waiting.",wNote:"Time in Waiting on customer is excluded from resolution time.",view:"View",needT:"Please enter title and reporter.",badU:"Invalid URL",rmLk:"Remove this link?",delC:"Delete permanently?",pinE:"Incorrect code",conn:"Connection error",allSt:"All statuses",allPr:"All priorities",allMd:"All modules",created:"created the ticket",changed:"changed",status:"status",prio:"priority",assign:"assigned to",addedL:"added link",removedL:"removed link",bizCl:"Confirmed closure (fix verified)",bizRe:"Reopened (issue not resolved)",reporter:"Reporter",module:"Module",type:"Type",ref:"Ref",period:"Period",issued:"Issued",by:"By",tickets:"Tickets",received:"Received",resolved:"Resolved",openL:"Open",avgR:"Avg response",avgX:"Avg resolution",comp:"Compliance",within:"Within target",rTgt:"Response target",xTgt:"Resolution target",s1:"1. Executive summary",s2:"2. SLA compliance",s3:"3. Breakdown",s4:"4. Age of open tickets",s5:"5. Tickets outside target",s6:"6. Waiting on customer",s7:"7. Detailed ticket log",byPr:"By priority",bySt:"By status",byMd:"By module",byTy:"By type",repTi:"Ticket and Support Report",repSu:"Lammk — Support and Maintenance",estEff:"Estimated effort",actEff:"Actual effort",effUpd:"Effort updated",resSumm:"Resolution summary",needRes:"Resolution summary and actual effort are required before setting status to Resolved or Closed."};
 function L(k){return(lang==="ar"?L_AR:L_EN)[k]||k}
 /* Effort total live calc */
 function calcEffTotals(){var e=parseFloat($("mEstFE").value)||0,b=parseFloat($("mEstBE").value)||0,m=parseFloat($("mEstMB").value)||0;$("mEstTot").textContent=e+b+m;var ae=parseFloat($("mActFE").value)||0,ab=parseFloat($("mActBE").value)||0,am=parseFloat($("mActMB").value)||0;$("mActTot").textContent=ae+ab+am}
@@ -349,7 +351,7 @@ function openT(id){
   var lk=$("mLk");
   if(!t.links||!t.links.length)lk.innerHTML='<span style="color:var(--gr);font-size:12px">'+L("noA")+'</span>';
   else{var lh="";for(var i=0;i<t.links.length;i++){lh+='<a href="'+esc(t.links[i].url)+'" target="_blank" rel="noopener">&#128206; '+esc(t.links[i].label)+'<span class="rm" onclick="rmL(event,'+i+')">&times;</span></a>'}lk.innerHTML=lh}
-  if(ROLE==="tech"&&$("mStSel")){$("mStSel").value=t.status;$("mPrSel").value=t.priority;$("mAsInp").value=t.assignee||""}
+  if(ROLE==="tech"&&$("mStSel")){$("mStSel").value=t.status;$("mPrSel").value=t.priority;$("mAsInp").value=t.assignee||"";$("mDuInp").value=dueNorm(t.due);$("mDuWhy").value=""}
   /* Populate effort fields */
   $("mEstFE").value=t.estFrontendH||"";$("mEstBE").value=t.estBackendH||"";$("mEstMB").value=t.estMobileH||"";
   $("mActFE").value=t.actualFrontendH||"";$("mActBE").value=t.actualBackendH||"";$("mActMB").value=t.actualMobileH||"";
@@ -360,6 +362,15 @@ function openT(id){
   for(var j=0;j<logArr.length;j++){var e=logArr[j];lg+='<p><b>'+esc(e.who||"—")+'</b> — '+(e.txt==="__created__"?L("created"):esc(e.txt))+'<br><em>'+new Date(e.t).toLocaleString()+'</em></p>'}
   $("mLg").innerHTML=lg;
   $("modal").classList.add("on");
+}
+
+/* Normalise a stored due date to YYYY-MM-DD so it can be compared and shown in a date input.
+   Handles plain dates, full ISO timestamps, and older free-text values from the Sheet. */
+function dueNorm(v){
+  if(!v)return"";
+  var m=String(v).match(/^(\d{4}-\d{2}-\d{2})/);if(m)return m[1];
+  var d=new Date(v);if(isNaN(d.getTime()))return"";
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 }
 
 /* Save modal — tech: ticket lifecycle only (status / priority / assignee).
@@ -374,6 +385,9 @@ function saveModal(){
     var ef=parseFloat($("mEstFE").value)||0,eb=parseFloat($("mEstBE").value)||0,em2=parseFloat($("mEstMB").value)||0;
     var af=parseFloat($("mActFE").value)||0,ab=parseFloat($("mActBE").value)||0,am=parseFloat($("mActMB").value)||0;
     var rs=$("mResSummary").value.trim();
+    var du0=dueNorm(t.due),du1=$("mDuInp").value,dw=$("mDuWhy").value.trim();
+    /* Due date: moving it later needs a short reason */
+    if(du1!==du0&&du0&&du1&&du1>du0&&!dw){alert(L("needDueWhy"));return}
     /* Closure validation: resolved/closed require resolution summary + actual effort > 0 */
     if((ns==="resolved"||ns==="closed")&&(!rs||(af+ab+am)===0)){alert(L("needRes"));return}
     /* Log effort changes */
@@ -385,13 +399,14 @@ function saveModal(){
     t.actualFrontendH=af;t.actualBackendH=ab;t.actualMobileH=am;
     if(rs!==(t.resSummary||"")){t.resSummary=rs;if(rs)t.log.push({t:now(),who:who,txt:L("resSumm")+": "+rs});ch=true}
     if(ns!==t.status){t.log.push({t:now(),who:who,txt:L("changed")+" "+L("status")+": "+sn(t.status)+" → "+sn(ns)});applyTiming(t,ns);t.status=ns;ch=true}
+    if(du1!==du0){t.log.push({t:now(),who:who,txt:L("dueChg")+": "+(du0||"—")+" → "+(du1||"—")+(dw?" — "+dw:"")});t.due=du1;ch=true}
     if(np!==t.priority){t.log.push({t:now(),who:who,txt:L("changed")+" "+L("prio")+": "+t.priority+" → "+np});t.priority=np;ch=true}
     if(na!==(t.assignee||"")){t.log.push({t:now(),who:who,txt:L("changed")+" "+L("assign")+" → "+(na||"—")});t.assignee=na;ch=true}
   }
   if(!ch)return;
   render();
   $("modal").classList.remove("on");
-  syncBg("update",{id:t.id,status:t.status,priority:t.priority,assignee:t.assignee,log:t.log,firstRespAt:t.firstRespAt,resolvedAt:t.resolvedAt,waitMs:t.waitMs,waitStart:t.waitStart,estFrontendH:t.estFrontendH,estBackendH:t.estBackendH,estMobileH:t.estMobileH,actualFrontendH:t.actualFrontendH,actualBackendH:t.actualBackendH,actualMobileH:t.actualMobileH,resSummary:t.resSummary});
+  syncBg("update",{id:t.id,status:t.status,priority:t.priority,assignee:t.assignee,due:t.due,log:t.log,firstRespAt:t.firstRespAt,resolvedAt:t.resolvedAt,waitMs:t.waitMs,waitStart:t.waitStart,estFrontendH:t.estFrontendH,estBackendH:t.estBackendH,estMobileH:t.estMobileH,actualFrontendH:t.actualFrontendH,actualBackendH:t.actualBackendH,actualMobileH:t.actualMobileH,resSummary:t.resSummary});
 }
 
 /* Dedicated comment action — separate from the ticket lifecycle.
